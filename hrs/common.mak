@@ -1,5 +1,5 @@
 #It's a project root. Enter the directory path where "hrs" lies. DO NOT INCLUDE hrs.
-PROJECT_ROOT =
+PROJECT_ROOT =/home/user9
 
 CC = g++
 

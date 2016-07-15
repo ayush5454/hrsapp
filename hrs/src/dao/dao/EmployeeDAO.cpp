@@ -27,63 +27,59 @@
 #include<string>
 
 /**@file EmployeeDAO.cpp
- * @brief Defines Data Access Object for Employee.
+ *@brief Defines Data Access Object for Employee.
  *
- **
-* <BR>NAME: EmployeeDAO
-* 
-* <BR>BASE CLASSES: No Parent
-* 
-* <BR>PURPOSE: This class is responsible for direct interaction with the
-*  database for Employee related issues.
-*
-* <BR>AUTHOR: Arun Veeramany
-* <BR>$Revision: 9th Dec'05
-* 
-* <BR>$Log: 9th Dec'05
-* 
-* <BR>COPYRIGHT NOTICE:
-* <BR>Copyright (c) 2005 C++ Capability team at Accenture. All rights reserved.
-*/
-
-
-
-
+ * <BR>NAME: EmployeeDAO
+ * 
+ * <BR>BASE CLASSES: No Parent
+ * 
+ * <BR>PURPOSE: This class is responsible for direct interaction with the
+ *  database for Employee related issues.
+ *
+ * <BR>AUTHOR: Arun Veeramany
+ * <BR>$Revision: 9th Dec'05
+ * 
+ * <BR>$Log: 9th Dec'05
+ * 
+ * <BR>COPYRIGHT NOTICE:
+ * <BR>Copyright (c) 2005 C++ Capability team at Accenture. All rights reserved.
+ */
 
 namespace dao {
 
 
 
-  /**@fn EmployeeDAO
-    * @brief Default Constructor.
-    * This constructor will not take any argument.
-    * @param none
-    * @return none
-    */
+    /**@fn EmployeeDAO
+     * @brief Default Constructor.
+     * This constructor will not take any argument.
+     * @param none
+     * @return none
+     */
 	
   EmployeeDAO::EmployeeDAO()
   {
         
   }
 
-  /**@fn create(HRSObject &employeeInfo)
-   * @brief Insert data into Employee table
-   * This method gets an instance of the connection from
-   * DBAccess and inserts data from the employeeInfo object
-   * into the Employee table.
-   * @param A reference to EmployeeInfo object containing employee data
-   * @return none
-   */               
-  void EmployeeDAO::create(HRSObject &employeeInfo)
+
+   /**@fn create(EmployeeInfo& employeeInfo)
+     * @brief Insert a Employee into Employee table
+     * This method gets an instance of the connection from
+     * DBAccess and inserts data from the employeeInfo object
+     * into the Employee table.
+     * @param A reference to EmployeeInfo object containing Employee data
+     * @return none
+     */       
+  
+  void EmployeeDAO::create(HRSObject& employeeInfo)
   {
     try{
-
       dbaccess::ODBCConnection* conn = dbaccess::DBAccess::getConnection();
       if(conn->getError().isError()) //Checks for error.
 	{
 	  throw new GeneralException(conn->getError().getErrorMessage());
 	}
-	 
+
       dbaccess::ODBCStatement* stmt = conn->createStatement();
       if(conn->getError().isError()) //Checks for error.
 	{
@@ -96,12 +92,13 @@ namespace dao {
       logger::Logger::getInstance().debug(__FILE__, __LINE__, __FUNCTION__, sqlstmt.c_str() );
 #endif
 
-      sqlstmt = EmployeeAssembler::assemble( static_cast<EmployeeInfo&>(employeeInfo), sqlstmt);
+      sqlstmt = EmployeeAssembler::assemble(static_cast<EmployeeInfo&>(employeeInfo), sqlstmt);
 
 #ifdef ALOGGER
       logger::Logger::getInstance().debug(__FILE__, __LINE__, __FUNCTION__, sqlstmt.c_str() );
 #endif
 
+	
       bool res = stmt->execute(sqlstmt);
 
       if( res == false)
@@ -114,40 +111,37 @@ namespace dao {
 	  throw new GeneralException("Create Employee Failed");
 	  return;
 	}
-  
+
       stmt->close();
       dbaccess::DBAccess::releaseConnection();
 
 #ifdef ALOGGER
       logger::Logger::getInstance().debug(__FILE__, __LINE__, __FUNCTION__, "");
 #endif
-
     }catch(dbaccess::DBException* dbe)
       {
 	throw new GeneralException(dbe->getMessage());
       }
+
   }
 
-   /**@fn find(std::string searchCriteria)
-     * @brief Search the records with the given criteria
-     * @param The condition to be specified while searching for records
-     * @return A vector of EmployeeInfo matching the criteria
-     */             
+
+  /**@fn find(std::string searchCriteria)
+    * @brief Search the records with the given criteria
+    * @param The condition to be specified while searching for records
+    * @return A vector of EmployeeInfo matching the criteria
+    */ 
   std::vector<HRSObject*> EmployeeDAO::find(std::string searchCriteria)
   {
-
     try{
       std::vector<HRSObject*> empInfo; 
-
-#ifdef ALOGGER
-      logger::Logger::getInstance().debug(__FILE__, __LINE__, __FUNCTION__, searchCriteria.c_str());
-#endif
 
       dbaccess::ODBCConnection* conn = dbaccess::DBAccess::getConnection();
       if(conn->getError().isError()) //Checks for error.
 	{
 	  throw new GeneralException(conn->getError().getErrorMessage());
 	}
+
       dbaccess::ODBCStatement* stmt = conn->createStatement();
       if(conn->getError().isError()) //Checks for error.
 	{
@@ -156,50 +150,39 @@ namespace dao {
 
       std::string sqlStmt = DAOConstants::EMPSQL_FIND_MAIN;
 
-#ifdef ALOGGER
-      logger::Logger::getInstance().debug(__FILE__, __LINE__, __FUNCTION__, sqlStmt.c_str());
-#endif
-
-      sqlStmt.replace( sqlStmt.find("%s"), 2, searchCriteria );
+      sqlStmt.replace( sqlStmt.find("%s"), 2, searchCriteria  );
 
 #ifdef ALOGGER
       logger::Logger::getInstance().debug(__FILE__, __LINE__, __FUNCTION__, sqlStmt.c_str());
 #endif
+
 
       dbaccess::ODBCResultSet* rs = stmt->executeQuery(sqlStmt);
       if(conn->getError().isError()) //Checks for error.
 	{
 	  throw new GeneralException(conn->getError().getErrorMessage());
 	}
-      if( !rs->next() )
-	throw new GeneralException("Record Not Found.");
 
-      AccentureDetails adInfo;
-    
-      EmployeeInfo eInfo;
+      if( ! rs->next() )
+        throw new GeneralException("Record Not Found.");
 
       do {
-	eInfo = EmployeeAssembler::disAssemble(rs); 
-	empInfo.push_back( new EmployeeInfo(eInfo)  ); 
-      }while( rs->next() );
+	empInfo.push_back(new EmployeeInfo(EmployeeAssembler::disAssemble(rs))  ); 
+      } while( rs->next() );
 
       rs->close();
       stmt->close();
       dbaccess::DBAccess::releaseConnection();
 
-#ifdef ALOGGER
-      logger::Logger::getInstance().debug(__FILE__, __LINE__, __FUNCTION__, "");
-#endif
-
       return empInfo;
     }catch(dbaccess::DBException* dbe)
       {
 	throw new GeneralException(dbe->getMessage());
-      } 
+      }
   }
 
 
-   /**@fn findByAll()
+   /**@fn findByAll
      * @brief Retrieve all records from the Employee table
      * @param none
      * @return A vector of all EmployeeInfo found in the table 
@@ -223,6 +206,10 @@ namespace dao {
 
       std::string sqlStmt = DAOConstants::EMPSQL_FIND_ALL;
 
+#ifdef ALOGGER
+      logger::Logger::getInstance().debug(__FILE__, __LINE__, __FUNCTION__, sqlStmt.c_str());
+#endif
+
       dbaccess::ODBCResultSet* rs = stmt->executeQuery(sqlStmt);
       if(conn->getError().isError()) //Checks for error.
 	{
@@ -230,11 +217,11 @@ namespace dao {
 	}
 
       if( !rs->next() )
-	throw new GeneralException("Record Not Found.");
+        throw new GeneralException("Record Not Found.");
 
       do {
-	empInfo.push_back( new EmployeeInfo(EmployeeAssembler::disAssemble(rs))  ); 
-      }while( rs->next() );
+	empInfo.push_back( new EmployeeInfo(EmployeeAssembler::disAssemble(rs)) ); 
+      } while( rs->next() );
 
       rs->close();
       stmt->close();
@@ -245,6 +232,7 @@ namespace dao {
 #endif
 
       return empInfo;
+
     }catch(dbaccess::DBException* dbe)
       {
 	throw new GeneralException(dbe->getMessage());
@@ -253,24 +241,23 @@ namespace dao {
 
 
 
-    /**@fn  findByPK(std::string pkValue)
-      * @brief Fetch Employees whose primary key value matches the passed one
-      * @param pkValue - Value of the primary key (Employee No.)
-      * @return EmployeeInfo - Record Matching the pkValue 
-      */   
+    /**@fn  findByPK
+     * @brief Fetch Employees whose primary key value matches the passed one
+     * @param pkValue - Value of the primary key (Employee Id)
+     * @return Employee
+
+
+Info - Record Matching the pkValue 
+     */  
+  
   HRSObject* EmployeeDAO::findByPK(std::string pkValue)
   {
-
     try{
       dbaccess::ODBCConnection* conn = dbaccess::DBAccess::getConnection();
       if(conn->getError().isError()) //Checks for error.
 	{
 	  throw new GeneralException(conn->getError().getErrorMessage());
 	}
-
-#ifdef ALOGGER
-      logger::Logger::getInstance().debug(__FILE__, __LINE__, __FUNCTION__, dbaccess::DBAccess::getError().c_str()  );
-#endif
 
       dbaccess::ODBCStatement* stmt = conn->createStatement();
       if(conn->getError().isError()) //Checks for error.
@@ -279,10 +266,14 @@ namespace dao {
 	}
 
       std::string sqlStmt = DAOConstants::EMPSQL_FIND_BYPK;
-
+	
       HRSObject* employeeReturn = NULL;
 
       sqlStmt.replace( sqlStmt.find("%s"), 2, pkValue);
+
+#ifdef ALOGGER
+      logger::Logger::getInstance().debug(__FILE__, __LINE__, __FUNCTION__, sqlStmt.c_str());
+#endif
 
       dbaccess::ODBCResultSet* rs = stmt->executeQuery(sqlStmt);
       if(conn->getError().isError()) //Checks for error.
@@ -290,11 +281,19 @@ namespace dao {
 	  throw new GeneralException(conn->getError().getErrorMessage());
 	}
 
+#ifdef ALOGGER
+      logger::Logger::getInstance().debug(__FILE__, __LINE__, __FUNCTION__, "Query Executed");
+#endif	
+
       //Fill the empInfo object.
       if(rs->next())
 	employeeReturn = new EmployeeInfo(EmployeeAssembler::disAssemble(rs));
       else
-	throw new GeneralException("Search by PK Failed");
+        throw new GeneralException("Search by PK Failed");
+
+#ifdef ALOGGER
+      logger::Logger::getInstance().debug(__FILE__, __LINE__, __FUNCTION__, "");
+#endif
 
       rs->close();
       stmt->close();
@@ -310,19 +309,17 @@ namespace dao {
       {
 	throw new GeneralException(dbe->getMessage());
       }
-            
   }     
 
 
-    /**@fn remove(std::string pkValue)
-      * @brief Remove the project from the Employee table given the EmployeeId
-      * @param pkValue - Delete the record corresponding to pkValue
-      * @return bool - Status of deletion
-      */   
+   /**@fn remove(std::string pkValue)
+     * @brief Remove the EmployeeInfo from the Employee table given the EmployeeId
+     * @param pkValue - Delete the record corresponding to pkValue
+     * @return bool - Status of deletion
+     */   
   
   bool EmployeeDAO::remove( std::string pkValue)     
   {
-
     try{
       dbaccess::ODBCConnection* conn = dbaccess::DBAccess::getConnection();
       if(conn->getError().isError()) //Checks for error.
@@ -341,7 +338,7 @@ namespace dao {
       sqlstmt.replace(sqlstmt.find("%s"), 2, pkValue);
 
       bool res = stmt->execute(sqlstmt);
-	
+
       if(res == false)
 	{
 	  stmt->close();
@@ -350,6 +347,7 @@ namespace dao {
 	}
 
       stmt->close();
+
       dbaccess::DBAccess::releaseConnection();
               
 #ifdef ALOGGER
@@ -362,17 +360,15 @@ namespace dao {
       {
 	throw new GeneralException(dbe->getMessage());
       }
-
   }
+     
 
 
    /**@fn update(EmployeeInfo& piSet)
      * @brief Update those records that match piWhere with piSet
      * @param piSet - the SET part of the UPDATE statement
      * @return bool - status of updatiom
-     */   
-
-  
+     */  
   bool EmployeeDAO::update(HRSObject& piSet)
   {
     try{
@@ -396,15 +392,20 @@ namespace dao {
       std::string set = t.transform(info);
     
       char query[1024];
-      sprintf( query, sqlStmt.c_str(), set.c_str() , info.getEmpNo().c_str() );
+      sprintf( query, sqlStmt.c_str(), set.c_str() , info.getEmployeeNo().c_str() );
+
+
 
 #ifdef ALOGGER
       logger::Logger::getInstance().debug(__FILE__, __LINE__, __FUNCTION__, query);
 #endif
 
+      bool res = stmt->execute( query );
 
-      bool res = stmt->executeUpdate( query );
-	
+#ifdef ALOGGER
+      logger::Logger::getInstance().debug(__FILE__, __LINE__, __FUNCTION__, "Query Executed");
+#endif
+
       if( res == false)
 	{
 #ifdef ALOGGER
@@ -423,13 +424,11 @@ namespace dao {
 #endif
 
       return res;
+
     }catch(dbaccess::DBException* dbe)
       {
 	throw new GeneralException(dbe->getMessage());
       }
-
-
   }
 
 }	//namespace dao
-

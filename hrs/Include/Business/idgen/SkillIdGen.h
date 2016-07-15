@@ -1,5 +1,5 @@
-#ifndef SKILLIDGEN
-#define SKILLIDGEN
+#ifndef SKILLIDGEN_H
+#define SKILLIDGEN_H
 
 #include<string>
 
@@ -10,9 +10,9 @@
 * 
 * <BR>BASE CLASSES:None
 * 
-* <BR>PURPOSE:To generate skill id
+* <BR>PURPOSE:To generate Skill Id.
 *
-* <BR>AUTHOR:Smitha Manjunath
+* <BR>AUTHOR:Smitha Manjunath	
 * <BR>
 * <BR>$Revision: $12/14/2005
 * 
@@ -22,11 +22,14 @@
 * <BR>Copyright (c) 2005 C++ Capability team at Accenture. All rights reserved.
 */
 
-namespace idgen {
+/**@namespace idgen
+ *@brief All the classes related to IDGenerator is defined in this namespace.
+ */
 
+namespace idgen {
+	
 /**@class SkillIdGen
 * @brief  Declaration of SkillIdGen
-* <PRE>The participants will be give following Activity.
 * <PRE>This class shall do the following
 * This class is the singleton.
 * It will provide a method to get an instance of it.
@@ -36,7 +39,7 @@ namespace idgen {
 
 class SkillIdGen
 {
-	static	SkillIdGen *m_thisInstance; ///<Variable to reference to SkillIdGenerator. 
+	static SkillIdGen *m_thisInstance; ///<Variable to reference to SkillIdGen. 
 
  private:
 
@@ -67,5 +70,5 @@ class SkillIdGen
   std::string getNextId();
 };
 
-} //namespace idgen 
-#endif //SKILLIDGEN
+}	//namespace idgen 
+#endif //SKILLIDGEN_H

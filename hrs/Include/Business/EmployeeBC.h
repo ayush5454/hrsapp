@@ -44,8 +44,8 @@ namespace bc {
 class EmployeeBC
 {
  private: 
-	 dao::EmployeeDAO m_empDao; ///<Reference to the employee Data Access object
-	 dao::EmpAccentureDetailsDAO m_empAccDao; ///<Reference to the employee accenture deatils DAO
+	 dao::EmployeeDAO m_empDAO; ///<Reference to the employee Data Access object
+	 dao::EmpAccentureDetailsDAO m_empAccDAO; ///<Reference to the employee accenture deatils DAO
 
       //	 EmployeeDao m_dbAccess; ///<Reference to the  employee DAO
 	 
@@ -58,7 +58,7 @@ class EmployeeBC
      * @param none
      * @return none
      */
-  EmployeeBC(){};// Check why it was not defined!!!!
+  EmployeeBC();// Check why it was not defined!!!!
 
   
     /**@fn EmployeeBC
@@ -66,7 +66,7 @@ class EmployeeBC
      * @param none
      * @return none
      */ 
-  ~EmployeeBC(){};//
+  ~EmployeeBC();//
 
 
      /**@fn createEmployee

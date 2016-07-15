@@ -1,14 +1,15 @@
 #ifndef SKILLCATEGORY_H
 #define SKILLCATEGORY_H
+
 /**
 * @file SkillCategory.h
 * @brief Value Object used to pass information between UI and DB.
 * 
 * NAME: SkillCategory
 * $Header: SkillCategory.h
-* BASE CLASSES: HRSObject
+* BASE CLASSES:HRSObject
 * 
-* PURPOSE: Value Object used to pass information between UI and DB.
+* PURPOSE: Value Object used to pass information between UI and DB.                                                                                                  
 * 
 * AUTHOR: Arun Veeramany
 * 
@@ -20,55 +21,53 @@
 * COPYRIGHT NOTICE:
 * Copyright (c) 2005 C++ Capability team at Accenture. All rights reserved.
 */
-#include<common/SkillsInformation.h>
 
-#include<string>
+#include <string>
 #include <common/HRSObject.h>
 
 /**@class SkillCategory
  * @brief Value Object used to pass information between UI and DB.
  **/
 class SkillCategory : public HRSObject
-{ 
+{
 
-	std::string m_categoryId;
+	std::string m_SkillCategoryDescription;
 
-	std::string m_categoryName;
+	std::string m_SkillCategoryId;
 
-	std::string m_categoryDescription;
+	std::string m_SkillCategoryName; 
 
 	std::string m_status;
-            
+
 public:
-	SkillCategory()
+	SkillCategory() 
 	{
-	  m_className = "SkillCategory";
+	  m_className = "SkillCategory"; 
 	}
 
 //Getters
 	const std::string getClassName()const {return m_className;}
-            
-	 std::string getCategoryId() { return m_categoryId; }
-            
-	 std::string getCategoryName() { return m_categoryName; }
 
-	 std::string getCategoryDescription()  { return m_categoryDescription; }
-
-	 std::string getStatus()  { return m_status; }
+           
+	std::string  getCategoryDescription( ) { return m_SkillCategoryDescription; }
             
+	std::string  getCategoryId() { return m_SkillCategoryId; } 
             
+	std::string  getCategoryName() { return m_SkillCategoryName; } 
 
-	 
+	std::string getStatus() { return m_status; }
+
 //Setters
             
-	 void setCategoryId(std::string categoryId) { m_categoryId = categoryId; }
+ void setCategoryDescription(std::string  SkillCategoryDescription) { m_SkillCategoryDescription = SkillCategoryDescription; } 
             
-	 void setCategoryName(std::string categoryName) { m_categoryName = categoryName; } 
+ void setCategoryId(std::string  SkillCategoryId) { m_SkillCategoryId = SkillCategoryId; } 
+            
+ void setCategoryName(std::string  SkillCategoryName) { m_SkillCategoryName = SkillCategoryName; } 
 
-	 void setCategoryDescription(std::string categoryDesc) { m_categoryDescription = categoryDesc; }
+ void setStatus(std::string  status) { m_status = status; }           
 
-	 void setStatus(std::string status) { m_status = status; }
+
 };
 
-#endif //SKILLCATEGORY_H
-
+#endif  //SkillCategoryINFO_H

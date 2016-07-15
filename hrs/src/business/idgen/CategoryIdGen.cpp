@@ -1,9 +1,7 @@
-
-
 /**@file CategoryIdGen.cpp
- * @brief Declares the CategoryIdGen
+ * @brief  Declares the SkillCategoryIdGen
  *
- * <BR>NAME:
+ * <BR>NAME: CategoryIdGen
  * 
  * <BR>BASE CLASSES:
  * 
@@ -23,11 +21,11 @@
 #include <iostream>
 #include<string>
 
-#include<common/GeneralException.h>// must be declared before DBException.
+#include<common/GeneralException.h> // must be declared before DBException.
+
 #include<dao/DAOConstants.h>
 
 #include<business/idgen/CategoryIdGen.h>
-
 #include<dbaccess/ODBCConnection.h>
 #include<dbaccess/ODBCResultSet.h>
 #include<dbaccess/ODBCStatement.h>
@@ -36,18 +34,12 @@
 #include<dbaccess/DBException.h>
 #include<dbaccess/ODBCError.h>
 
-
-
-#ifdef ALOGGER
-#include<logger/Logger.h>
-#endif
-
 namespace idgen {
-
-  CategoryIdGen* CategoryIdGen::m_thisInstance = NULL;
+	
+  CategoryIdGen*CategoryIdGen::m_thisInstance = NULL;
 
   /**@class CategoryIdGen
-   * @brief Declaration of CategoryIdGen
+   * @brief Declaration of SkillCategoryIdGen
    * <PRE>The participants will be give following Activity.
    * 1. Write a class CategoryIdGen, which will enforce encapsulation.
    * 2. class CategoryIdGen should have class member variable to reference to CategoryIdGen.
@@ -59,24 +51,19 @@ namespace idgen {
    </PRE>
   */
 
-  CategoryIdGen::CategoryIdGen()
+ CategoryIdGen::CategoryIdGen()
   {
   }
 
-
-  /**@fn getInstance
-   * @brief implements singleton CategoryIdGen class.
+ /**@fn getInstance
+   * @brief implements singleton skillcategoryIdGen class.
    * @param none
-   * @return Pointer to CategoryIdGen.
+   * @return Pointer to skillcategoryIdGen.
    */
   CategoryIdGen* CategoryIdGen::getInstance()
   {
-#ifdef ALOGGER
-    logger::Logger::getInstance().info("CategoryIdgen::getInstance::About to return an instance of CategoryIdGen");
-#endif
-
     if(m_thisInstance == NULL)
-      m_thisInstance = new CategoryIdGen;
+      m_thisInstance = new CategoryIdGen();
     return m_thisInstance;
   }
  
@@ -89,16 +76,11 @@ namespace idgen {
   std::string CategoryIdGen::getNextId()
   {
     try{
-#ifdef ALOGGER
-      logger::Logger::getInstance().info("CategoryIdgen::getNextId::About to generate a new category id");
-#endif
-
       dbaccess::ODBCConnection* conn = dbaccess::DBAccess::getConnection();
       if(conn->getError().isError()) //Checks for error.
 	{
 	  throw new GeneralException(conn->getError().getErrorMessage());
 	}
-
       dbaccess::ODBCStatement* stmt = conn->createStatement();
       if(conn->getError().isError()) //Checks for error.
 	{
@@ -123,18 +105,15 @@ namespace idgen {
       
       res->close();
       stmt->close();
+      
       dbaccess::DBAccess::releaseConnection();
 
-#ifdef ALOGGER
-      logger::Logger::getInstance().info("CategoryIdgen::getNextId::Returning a new category id");
-#endif
-	
       return id;
-
+	  
     }catch(dbaccess::DBException* dbe)
       {
 	throw new GeneralException(dbe->getMessage());
       }
   }
 
-}	//namespace idgen
+} //namespace idgen

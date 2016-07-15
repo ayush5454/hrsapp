@@ -1,50 +1,49 @@
 #ifndef SKILLCATEGORYBC_H
 #define SKILLCATEGORYBC_H
-
 #include <string>
 #include <vector>
 
-
 class SkillCategory;
+
 #include<dao/SkillCategoryDAO.h>
 
-
-/**@file SkillCategoryBC.h
-* @brief HRS Application : Declares the SkillCategoryBC Class.
+/**@file SkillBC.h
+* @brief HRS Application : Declares the SkillBC Class.
 *
-* <BR>NAME:SkillCategoryBC
+* <BR>NAME:SkillBC
 * 
 * <BR>BASE CLASSES:None
 * 
-* <BR>PURPOSE:To do the effective communication bitween the HRManager class and the SkillCategoryDAO
+* <BR>PURPOSE:To do the effective communication bitween the HRManager class and the SkillDAO class
 *
 * <BR>AUTHOR:Vinoj.V.S
 * <BR>
-* <BR>$Revision: $8/12/2005
+* <BR>$Revision: $6/12/2005
 * 
-* <BR>$Log:8/12/2005
+* <BR>$Log:6/12/2005
 * 
 * <BR>COPYRIGHT NOTICE:
 * <BR>Copyright (c) 2005 C++ Capability team at Accenture. All rights reserved.
 */
+
 namespace bc {
-/**@class SkillCategoryBC
-* @brief HRS Application  Declaration of SkillCategoryBC Class.
+/**@class SkillBC
+* @brief HRS Application  Declaration of SkillBC Class.
 * <PRE>The participants will be give following Activity.
-* 1. Write a class SkillCategoryBC, which will enforce encapsulation.
-* 2. class SkillCategoryBC should have two private member variable. 
+* 1. Write a class SkillBC, which will enforce encapsulation.
+* 2. class SkillBC should have two private member variable. 
 * 3. Declare one constructors.
 * 4. Declare Destructor.
 */
 
 class SkillCategoryBC
 {
- private: 
-	 dao::SkillCategoryDAO m_catDAO; ///<Reference to the SkillCategoryCategoryDAO
-	 
+	private:
+	dao::SkillCategoryDAO m_catDAO;
+
  public:
 
-  /**@fn SkillCategoryBC
+  /**@fn ProjectBC
    * @brief Default Constructor.
    * This constructor will not take any argument.
    * It will initialize both the variable to ZERO.
@@ -54,45 +53,49 @@ class SkillCategoryBC
   SkillCategoryBC();
 
   
-  /**@fn SkillCategoryBC
+  /**@fn ~SkillBC
    * @brief Destructor.
    * @param none
    * @return none
    */ 
-  ~SkillCategoryBC(){};
+  ~SkillCategoryBC();
 
-
-
-   /**It create the SkillCategory data
+   /**@fn createSkill
+    * @brief it creats the skill 
+   * It create the skill data
    * returns nothing.
-   * @param object of the class SkillCategory
+   * @param a reference to the object of SkillInfo
    * @return nothing.
    */
   void createCategory(SkillCategory& info);
   
  
-  /**returns the Information of the SkillCategory.
+  /**@fn searchProject
+   * @brief it seerchs for a project 
    * @param std::string
-   * @return an object of the class SkillCategory.
+   * @return an object of the class Projectinfo.
    */
    SkillCategory searchSkillCategory(std::string id);
   
-  /**returns the collection of Information of the SkillCategory.
-   * @param object of the class SkillCategory.
-   * @return a set of objects to the class SkillCategory.
+  /**@fn searchProjects
+   * @brief it seerchs for a collection of projects 
+   * @param std::string
+   * @return a set of objects to the class Projectinfo.
    */
    std::vector<SkillCategory> searchSkillCategories(std::string dataFind);
 
 
-  /**This function updates the information of the SkillCategory records in the database.
+  /**@fn updateProject
+   * @brief it updtes the project
+   * This function updates the information of the project records in the database.
    * Returns nothing
-   * @param object of the class SkillCategory.
+   * @parama reference to the object of ProjectInfo
    * @return none
    */
   void updateCategory(SkillCategory& info);
 };
 
 } //namespace bc
-#endif //SkillCategoryBC.h
+#endif //SkillBC.h
 
 

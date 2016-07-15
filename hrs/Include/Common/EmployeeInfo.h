@@ -99,7 +99,7 @@ public:
             
 	std::string getDOB() { return m_dob;  }
             
-	std::string getEmpNo() { return m_empNo; }  
+	std::string getEmployeeNo() { return m_empNo; }  
             
 	std::string getFirstName() { return m_firstName; }              
             

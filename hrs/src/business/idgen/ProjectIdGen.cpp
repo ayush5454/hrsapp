@@ -66,7 +66,7 @@ namespace idgen {
   ProjectIdGen* ProjectIdGen::getInstance()
   {
     if(m_thisInstance == NULL)
-      m_thisInstance = new ProjectIdGen;
+      m_thisInstance = new ProjectIdGen();
     return m_thisInstance;
   }
  

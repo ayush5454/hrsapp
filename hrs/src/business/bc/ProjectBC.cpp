@@ -112,9 +112,7 @@ namespace bc{
     std::vector<ProjectInfo> prjList;
 
     std::vector<HRSObject*> prjListPtr;
-
-
-      prjListPtr = m_projectDAO.find(name);
+    prjListPtr = m_projectDAO.find(name);
 
     int size = prjListPtr.size();
     for(int i = 0; i < size; ++i)

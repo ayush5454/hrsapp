@@ -10,7 +10,7 @@
 * 
 * <BR>BASE CLASSES:None
 * 
-* <BR>PURPOSE:To generate employee id.
+* <BR>PURPOSE:To generate Employee id.
 *
 * <BR>AUTHOR:Smitha Manjunath	
 * <BR>
@@ -55,7 +55,7 @@ class EmpIdGen
   public:
 
  /**@fn getInstance
-  * @brief implements singleton EmplIdGen class.
+  * @brief implements singleton EmpIdGen class.
   * @param none
   * @return Pointer to EmpIdGen.
   */

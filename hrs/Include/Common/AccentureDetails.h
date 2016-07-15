@@ -29,7 +29,7 @@
  * */
 class AccentureDetails : public HRSObject
 {
-    std::string m_employeeNo; 
+    std::string m_empNo; 
 
     std::string m_enterpriseId;
 
@@ -63,7 +63,7 @@ public:
 
 	const std::string getClassName()const {return m_className;}
 		
-	std::string getEmployeeNo() { return m_employeeNo; }
+	std::string getEmployeeNo() { return m_empNo; }
 	
 	std::string getEnterpriseId() { return m_enterpriseId; }
 
@@ -88,7 +88,7 @@ public:
 
             
 //Setters            
-	void setEmployeeNo(std::string employeeNo) { m_employeeNo= employeeNo; }
+	void setEmployeeNo(std::string employeeNo) { m_empNo= employeeNo; }
                         
 	void setEnterpriseId(std::string enterpriseId) { m_enterpriseId= enterpriseId; }
 

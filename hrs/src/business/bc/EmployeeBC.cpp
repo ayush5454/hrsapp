@@ -1,5 +1,6 @@
 #include<business/EmployeeBC.h> 
-
+#ifndef NULL
+#define NULL 0
 #include<common/EmployeeInfo.h>
 #include<common/AccentureDetails.h>
 #include<common/GeneralException.h>
@@ -17,153 +18,153 @@
 #endif
 
 
-/**@file EmployeeBC.cpp
- * @brief HRS Application : Defines the EmployeeBC Class.
- *
- * <BR>NAME:EmployeeBC
- * 
- * <BR>BASE CLASSES:None
- * 
- * <BR>PURPOSE:It is the interface bitween HRManager class and EmployeeDAO class
- *
- * <BR>AUTHOR:Vinoj.V.S
- * <BR>
- * <BR>$Revision: $5/12/2005
- * 
- * <BR>$Log:5/12/2005
- * 
- * <BR>COPYRIGHT NOTICE:
- * <BR>Copyright (c) 2005 C++ Capability team at Accenture. All rights reserved.
- */
+namespace bc{
 
-namespace bc {
 
-  /**@fn createEmployee
-    *@brief This creates employee
-    * It create the employee data
-    * returns nothing.
-    * @param reference to the class employeeInfo
-    * @return void.
-    */
+  EmployeeBC::EmployeeBC()
+  {
+/*	  m_empDAO = NULL;
+	 m_empAccDAO = NULL;
+  
+*/
+}
+
+  EmployeeBC::~EmployeeBC()
+  {
+/*	  m_empDAO = NULL;
+	m_empAccDAO = NULL;
+  */
+}
+		    
+
+
+ 
+
+//..................................................
   void EmployeeBC::createEmployee(EmployeeInfo& info)
   {
-
 #ifdef ALOGGER
-    logger::Logger::getInstance().debug(__FILE__, __LINE__, __FUNCTION__, "About to get the next ID");
-#endif	
+    logger::Logger::getInstance().debug(__FILE__, __LINE__, __FUNCTION__, "About to get unique id");
+#endif
 
-    std::string id;
-    id=(idgen::EmpIdGen::getInstance())->getNextId();
+    std::string id=(idgen::EmpIdGen::getInstance())->getNextId();
 
 #ifdef ALOGGER
     logger::Logger::getInstance().debug(__FILE__, __LINE__, __FUNCTION__, id.c_str());
-#endif	
+#endif
 
-    info.setEmpNo(id);//info is an instance of the class EmployeeInfo and id is a string
-    m_empDao.create(info); 
+    info.setEmpNo(id);
+    m_empDAO.create(info); 
 
-    AccentureDetails accdetails=info.getAccentureDetails();
-    accDetails.setEmployeeNo(id);
-    m_empAccDao.create(accDetails);
+	AccentureDetails a_details;
+//a_details=info.getAccentureDetails();info is an instance of the class EmployeeInfo and id is a string
+	a_details.setEnterpriseId(id);
+	m_empAccDAO.create(a_details);
+
 
 #ifdef ALOGGER
     logger::Logger::getInstance().debug(__FILE__, __LINE__, __FUNCTION__, "");
-#endif	
-
+#endif
+	
+	
   }
 	
-
-   /**@fn searchEmployee
-     *@brief This function searchs for employee
-     * returns the Information of the employee.
-     * @param std::string
-     * @return an object of the class employeeinfo.
-     */
-  EmployeeInfo EmployeeBC::searchEmployee(std::string id)
+//......................................................
+  
+EmployeeInfo EmployeeBC::searchEmployee(std::string empno)
   {
-#ifdef ALOGGER
-    logger::Logger::getInstance().debug(__FILE__, __LINE__, __FUNCTION__, id.c_str() );
-#endif	
-
-    /*EmployeeDAO::findByPK will return the pointer to the HRSObject which we shall be converting 
-      into a specific EmployeeInfo object and will delete the returned pointer for memory management.
-     */
     EmployeeInfo eInfo;
-    EmployeeInfo* eInfoPtr = NULL; //converted to the pointers.
-    
-    eInfoPtr = static_cast<EmployeeInfo*>(m_empDao.findByPK(id));
+    EmployeeInfo* eInfoPtr = NULL;
+	
+
+#ifdef ALOGGER
+    //logger::Logger::getInstance().info("EmployeeBC::searchEmployee::searching an Employee");
+    logger::Logger::getInstance().debug(__FILE__, __LINE__, __FUNCTION__, empno.c_str() );
+#endif	
+    eInfoPtr = static_cast<EmployeeInfo*>(m_empDAO.findByPK(empno));//we may overload == operator in projectInfo
+
     eInfo = *eInfoPtr;
     delete eInfoPtr;
-
-    AccentureDetails accInfo;
-    AccentureDetails* accInfoPtr = NULL; //converted to the pointers.
-    
-    accInfoPtr = static_cast<AccentureDetails*>(m_empAccDao.findByPK(id));
-    accInfo = *accInfoPtr;
-    delete accInfoPtr;
-    
-    eInfo.setAccentureDetails(accInfo);
-
-    return eInfo;
+	
+	AccentureDetails acc_obj;
+	AccentureDetails* acc_ptr = NULL;
+	
+	acc_ptr = static_cast<AccentureDetails*>(m_empAccDAO.findByPK(empno));
+	acc_obj = *acc_ptr;
+	delete acc_ptr;
+	
+   eInfo.setAccentureDetails(acc_obj);
+   return eInfo;
+	
   }
 
+ 
 
 
-   /**@fn searchEmployees
-     *@brief This function searchs for employees
-     * returns the collection of Information of the employee.
-     * @param std:string info
-     * @return the collection of objects of the class EmployeeInfo.
-     */
-  std::vector<EmployeeInfo> EmployeeBC::searchEmployees(std::string info)
+
+//....................................................
+
+std::vector<EmployeeInfo> EmployeeBC::searchEmployees(std::string info)
   {
+
 #ifdef ALOGGER
-    logger::Logger::getInstance().debug(__FILE__, __LINE__, __FUNCTION__, info.c_str() );
-#endif	
-	
+    logger::Logger::getInstance().debug(__FILE__, __LINE__, __FUNCTION__, name.c_str() );
+#endif
+
     std::vector<EmployeeInfo> empList;
 
     std::vector<HRSObject*> empListPtr;
 
-    empListPtr = m_empDao.find(info);             // Find all the employees
-    
-    EmployeeInfo eInfo;
-    AccentureDetails* accInfoPtr = NULL; //converted to the pointers.
-    
+    empListPtr = m_empDAO.find(info);
+
     int size = empListPtr.size();
     for(int i = 0; i < size; ++i)
-    {
-        eInfo = *(static_cast<EmployeeInfo*>(empListPtr[i]));
-        accInfoPtr = static_cast<AccentureDetails*>(m_empAccDao.findByPK( eInfo.getEmpNo() ));
-        eInfo.setAccentureDetails( *accInfoPtr);
-        delete accInfoPtr;
-    	empList.push_back( eInfo );
-    }
-      
+      {
+	empList.push_back( *(static_cast<EmployeeInfo*>(empListPtr[i])) );
+      }
     for(int i = 0; i < size; ++i)
       delete empListPtr[i];
-
     empListPtr.clear();
+
+	std::vector<AccentureDetails> accList;
+	std::vector<AccentureDetails*> accListPtr;
+
+	accListPtr = m_empAccDAO.find(info);
+
+	int size = accListPtr.size();
+	for(int j=0; j<size;j++)
+		accList.push_back( *(static_cast<AccentureDetails*>(accListPtr[j])) );
+	
+	for(int j=0; j < size;j++)
+		delete accListPtr[j];
+	
+accListPtr.clear();
+
 
     return empList;
 
-  }
+}
+
 
    
-   /**@fn update
-     *@brief This function updates for employees
-     * this function updates the information of the employees.
-     * Returns nothing
-     * @param reference totheobject of the class EmployeeInfo
-     * @return none
-     */
-  void EmployeeBC::update(EmployeeInfo& info)  
+  
+  
+
+//........................................................
+void EmployeeBC::updateEmployee(EmployeeInfo& piSet)
+
   {
 #ifdef ALOGGER
     logger::Logger::getInstance().debug(__FILE__, __LINE__, __FUNCTION__, "");
+//logger::Logger::getInstance().info("EmployeeBC:: updateEmployee::About to updatet the Employee");
 #endif	
-    m_empDao.update(info);
-    AccentureDetails acc = info.getAccentureDetails();
-    m_empAccDao.update(acc);
+
+    m_empDAO.update(piSet);
+    AccentureDetails acc=piset.getAccentureDetails();
+	m_empAccDAO.update(acc);
+	
+
   }
-} //namespace bc
+
+}//namespace bc
+#endif

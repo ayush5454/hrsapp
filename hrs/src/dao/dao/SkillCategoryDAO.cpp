@@ -5,18 +5,16 @@
 #include<common/SkillCategory.h>
 #include<common/GeneralException.h>
 
-
 #include<dao/SkillCategoryDAO.h>
-
-#include<dao/Transforms.h>
 
 #include<dbaccess/dbAccess.h>
 #include<dbaccess/DBException.h>
 #include<dbaccess/ODBCError.h>
 
-#include<dao/assemblers/SkillCategoryAssembler.h>
-
 #include<dao/DAOConstants.h>
+
+#include<dao/assemblers/SkillCategoryAssembler.h>
+#include<dao/Transforms.h>
 
 #include<vector>
 #include<string>
@@ -25,16 +23,15 @@
 #include<logger/Logger.h>
 #endif
 
-
 /**@file SkillCategoryDAO.cpp
- * @brief defines Data Access Object for Skill Category.
+ *@brief Defines Data Access Object for SkillCategory.
  *
  * <BR>NAME: SkillCategoryDAO
  * 
  * <BR>BASE CLASSES: No Parent
  * 
  * <BR>PURPOSE: This class is responsible for direct interaction with the
- *  database for Major Skill Category related issues.
+ *  database for SkillCategory related issues.
  *
  * <BR>AUTHOR: Arun Veeramany
  * <BR>$Revision: 9th Dec'05
@@ -45,31 +42,31 @@
  * <BR>Copyright (c) 2005 C++ Capability team at Accenture. All rights reserved.
  */
 
-
-
-
 namespace dao {
 
 
-   /**@fn SkillCategoryDAO
+
+    /**@fn SkillCategoryDAO
      * @brief Default Constructor.
      * This constructor will not take any argument.
      * @param none
      * @return none
-     */	
+     */
+	
   SkillCategoryDAO::SkillCategoryDAO()
   {
         
   }
 
-   /**@fn create( SkillCategory& skillCategory)
+
+   /**@fn create(SkillCategory& SkillCategory)
      * @brief Insert a SkillCategory into SkillCategory table
      * This method gets an instance of the connection from
-     * DBAccess and inserts data from the skillCategory object
-     * into the skillCategory table.
-     * @param A reference to SkillCategory object containing Skill Category data
+     * DBAccess and inserts data from the SkillCategory object
+     * into the SkillCategory table.
+     * @param A reference to SkillCategory object containing SkillCategory data
      * @return none
-     */     
+     */       
   
   void SkillCategoryDAO::create(HRSObject& skillCategory)
   {
@@ -91,15 +88,16 @@ namespace dao {
 #ifdef ALOGGER
       logger::Logger::getInstance().debug(__FILE__, __LINE__, __FUNCTION__, sqlstmt.c_str() );
 #endif
-    
+
       sqlstmt = SkillCategoryAssembler::assemble(static_cast<SkillCategory&>(skillCategory), sqlstmt);
 
 #ifdef ALOGGER
       logger::Logger::getInstance().debug(__FILE__, __LINE__, __FUNCTION__, sqlstmt.c_str() );
 #endif
 
-
+	
       bool res = stmt->execute(sqlstmt);
+
       if( res == false)
 	{
 #ifdef ALOGGER
@@ -117,28 +115,23 @@ namespace dao {
 #ifdef ALOGGER
       logger::Logger::getInstance().debug(__FILE__, __LINE__, __FUNCTION__, "");
 #endif
-
     }catch(dbaccess::DBException* dbe)
       {
 	throw new GeneralException(dbe->getMessage());
       }
+
   }
 
 
-   /**@fn find(std::string searchCriteria)
-     * @brief Search the records with the given criteria
-     * @param The condition to be specified while searching for records
-     * @return A vector of SkillCategory matching the criteria
-     */
-
+  /**@fn find(std::string searchCriteria)
+    * @brief Search the records with the given criteria
+    * @param The condition to be specified while searching for records
+    * @return A vector of SkillCategory matching the criteria
+    */ 
   std::vector<HRSObject*> SkillCategoryDAO::find(std::string searchCriteria)
   {
     try{
-      std::vector<HRSObject*> skillInfo; 
-
-#ifdef ALOGGER
-      logger::Logger::getInstance().debug(__FILE__, __LINE__, __FUNCTION__, searchCriteria.c_str());
-#endif
+      std::vector<HRSObject*> sklInfo; 
 
       dbaccess::ODBCConnection* conn = dbaccess::DBAccess::getConnection();
       if(conn->getError().isError()) //Checks for error.
@@ -154,15 +147,12 @@ namespace dao {
 
       std::string sqlStmt = DAOConstants::SKILLCAT_FIND_MAIN;
 
-#ifdef ALOGGER
-      logger::Logger::getInstance().debug(__FILE__, __LINE__, __FUNCTION__, sqlStmt.c_str());
-#endif
-
       sqlStmt.replace( sqlStmt.find("%s"), 2, searchCriteria  );
 
 #ifdef ALOGGER
       logger::Logger::getInstance().debug(__FILE__, __LINE__, __FUNCTION__, sqlStmt.c_str());
 #endif
+
 
       dbaccess::ODBCResultSet* rs = stmt->executeQuery(sqlStmt);
       if(conn->getError().isError()) //Checks for error.
@@ -174,20 +164,16 @@ namespace dao {
         throw new GeneralException("Record Not Found.");
 
       do {
-	skillInfo.push_back(new SkillCategory(SkillCategoryAssembler::disAssemble(rs))  ); 
-      }while( rs->next() );
+	sklInfo.push_back(new SkillCategory(SkillCategoryAssembler::disAssemble(rs))  ); 
+      } while( rs->next() );
 
-
+//new SkillCategory "class name in common folder"
+     
       rs->close();
       stmt->close();
       dbaccess::DBAccess::releaseConnection();
 
-#ifdef ALOGGER
-      logger::Logger::getInstance().debug(__FILE__, __LINE__, __FUNCTION__, "About to return the vector...");
-#endif
-
-      return skillInfo;
-
+      return sklInfo;
     }catch(dbaccess::DBException* dbe)
       {
 	throw new GeneralException(dbe->getMessage());
@@ -195,15 +181,15 @@ namespace dao {
   }
 
 
-   /**@fn findByAll()
+   /**@fn findByAll
      * @brief Retrieve all records from the SkillCategory table
      * @param none
      * @return A vector of all SkillCategory found in the table 
-     */             
+     */            
   std::vector<HRSObject*> SkillCategoryDAO::findByAll()
   {
     try{
-      std::vector<HRSObject*> skillInfo; 
+      std::vector<HRSObject*> sklInfo; 
 
       dbaccess::ODBCConnection* conn = dbaccess::DBAccess::getConnection();
       if(conn->getError().isError()) //Checks for error.
@@ -219,6 +205,10 @@ namespace dao {
 
       std::string sqlStmt = DAOConstants::SKILLCAT_FIND_ALL;
 
+#ifdef ALOGGER
+      logger::Logger::getInstance().debug(__FILE__, __LINE__, __FUNCTION__, sqlStmt.c_str());
+#endif
+
       dbaccess::ODBCResultSet* rs = stmt->executeQuery(sqlStmt);
       if(conn->getError().isError()) //Checks for error.
 	{
@@ -229,8 +219,8 @@ namespace dao {
         throw new GeneralException("Record Not Found.");
 
       do {
-	skillInfo.push_back(new SkillCategory(SkillCategoryAssembler::disAssemble(rs))  ); 
-      }while( rs->next() );
+	sklInfo.push_back( new SkillCategory(SkillCategoryAssembler::disAssemble(rs)) ); 
+      } while( rs->next() );
 
       rs->close();
       stmt->close();
@@ -240,7 +230,7 @@ namespace dao {
       logger::Logger::getInstance().debug(__FILE__, __LINE__, __FUNCTION__, "");
 #endif
 
-      return skillInfo;
+      return sklInfo;
 
     }catch(dbaccess::DBException* dbe)
       {
@@ -249,16 +239,19 @@ namespace dao {
   }
 
 
-   /**@fn  findByPK
-     * @brief Fetch SkillCategories whose primary key value matches the passed one
+
+    /**@fn  findByPK
+     * @brief Fetch SkillCategorys whose primary key value matches the passed one
      * @param pkValue - Value of the primary key (SkillCategory Id)
-     * @return SkillCategory - Record Matching the pkValue 
-     */ 
+     * @return SkillCategory
+
+
+Info - Record Matching the pkValue 
+     */  
   
   HRSObject* SkillCategoryDAO::findByPK(std::string pkValue)
   {
     try{
-
       dbaccess::ODBCConnection* conn = dbaccess::DBAccess::getConnection();
       if(conn->getError().isError()) //Checks for error.
 	{
@@ -271,17 +264,9 @@ namespace dao {
 	  throw new GeneralException(conn->getError().getErrorMessage());
 	}
 
-#ifdef ALOGGER
-      logger::Logger::getInstance().debug(__FILE__, __LINE__, __FUNCTION__, pkValue.c_str());
-#endif
-
       std::string sqlStmt = DAOConstants::SKILLCAT_FIND_BYPK;
 	
-#ifdef ALOGGER
-      logger::Logger::getInstance().debug(__FILE__, __LINE__, __FUNCTION__, sqlStmt.c_str());
-#endif
-
-      SkillCategory* skillReturn = NULL;
+      SkillCategory* SkillCategoryReturn = NULL ;
 
       sqlStmt.replace( sqlStmt.find("%s"), 2, pkValue);
 
@@ -295,11 +280,19 @@ namespace dao {
 	  throw new GeneralException(conn->getError().getErrorMessage());
 	}
 
+#ifdef ALOGGER
+      logger::Logger::getInstance().debug(__FILE__, __LINE__, __FUNCTION__, "Query Executed");
+#endif	
+
       //Fill the empInfo object.
       if(rs->next())
-	skillReturn = new SkillCategory(SkillCategoryAssembler::disAssemble(rs));
+	SkillCategoryReturn = new SkillCategory(SkillCategoryAssembler::disAssemble(rs));
       else
-	throw new GeneralException("Search by PK Failed");
+        throw new GeneralException("Search by PK Failed");
+
+#ifdef ALOGGER
+      logger::Logger::getInstance().debug(__FILE__, __LINE__, __FUNCTION__, "");
+#endif
 
       rs->close();
       stmt->close();
@@ -309,20 +302,20 @@ namespace dao {
       logger::Logger::getInstance().debug(__FILE__, __LINE__, __FUNCTION__, "");
 #endif
 
-      return skillReturn;
+      return SkillCategoryReturn;
+
     }catch(dbaccess::DBException* dbe)
       {
 	throw new GeneralException(dbe->getMessage());
       }
-              
   }     
 
 
    /**@fn remove(std::string pkValue)
-     * @brief Remove the SkillCategory from the SkillCategory table given the SkillCategory Id
+     * @brief Remove the SkillCategory from the SkillCategory table given the SkillCategoryId
      * @param pkValue - Delete the record corresponding to pkValue
      * @return bool - Status of deletion
-     */ 
+     */   
   
   bool SkillCategoryDAO::remove( std::string pkValue)     
   {
@@ -344,6 +337,7 @@ namespace dao {
       sqlstmt.replace(sqlstmt.find("%s"), 2, pkValue);
 
       bool res = stmt->execute(sqlstmt);
+
       if(res == false)
 	{
 	  stmt->close();
@@ -354,29 +348,29 @@ namespace dao {
       stmt->close();
 
       dbaccess::DBAccess::releaseConnection();
-
+              
 #ifdef ALOGGER
       logger::Logger::getInstance().debug(__FILE__, __LINE__, __FUNCTION__, "");
 #endif
-          
+
       return res;
+
     }catch(dbaccess::DBException* dbe)
       {
 	throw new GeneralException(dbe->getMessage());
       }
   }
+     
 
 
    /**@fn update(SkillCategory& piSet)
      * @brief Update those records that match piWhere with piSet
      * @param piSet - the SET part of the UPDATE statement
      * @return bool - status of updatiom
-     */
-  
+     */  
   bool SkillCategoryDAO::update(HRSObject& piSet)
   {
     try{
-
       dbaccess::ODBCConnection* conn = dbaccess::DBAccess::getConnection();
       if(conn->getError().isError()) //Checks for error.
 	{
@@ -398,12 +392,16 @@ namespace dao {
     
       char query[1024];
       sprintf( query, sqlStmt.c_str(), set.c_str() , info.getCategoryId().c_str() );
-
+// class SkillCategory function info.getCategoryId()
 #ifdef ALOGGER
       logger::Logger::getInstance().debug(__FILE__, __LINE__, __FUNCTION__, query);
 #endif
 
       bool res = stmt->execute( query );
+
+#ifdef ALOGGER
+      logger::Logger::getInstance().debug(__FILE__, __LINE__, __FUNCTION__, "Query Executed");
+#endif
 
       if( res == false)
 	{
@@ -428,7 +426,6 @@ namespace dao {
       {
 	throw new GeneralException(dbe->getMessage());
       }
-
   }
 
-}	// namespace dao 
+}	//namespace dao
